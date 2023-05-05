@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "Nghiệp Vụ Bản In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            padding-top: 50px;
+            margin: auto;
+        }
+
+        #MatKhau {
+            margin-right: 10px;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Nghiệp Vụ Bản In</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+
+                            <input type="month" name="table_search" class="form-control float-right" id="Filter">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Searching">
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable" style="width: 100%;">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="3%">STT</th>
+                                    <th>Tên Nhóm</th>
+                                    <th>Tổng Trang Đã In</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+
+    var dtt;
+
+    var XEMCHITIET = false;
+
+
+    $("#Searching").keyup(function (e) {
+        dtt.columns(0).search($("#Filter").val());
+        dtt.columns(1).search($("#Searching").val());
+        dtt.draw();
+    });
+
+    $("#Filter").change(function (e) {
+        dtt.columns(0).search($("#Filter").val());
+        dtt.columns(1).search($("#Searching").val());
+        dtt.draw();
+    });
+
+
+    function xemchitiet(obj) {
+        var ele = $(obj);
+        var ID = ele.data("model-id");
+        var url = ``
+        if ($("#Filter").val() == null || $("#Filter").val() == '') {
+            url = `/bao-cao/xem-chi-tiet-nhom?ID_NhomNhanVien=${ID}`
+        } else {
+            url = `/bao-cao/xem-chi-tiet-nhom?ID_NhomNhanVien=${ID}&month=${$("#Filter").val()}`
+        }
+        window.location.replace(url);
+
+    }
+
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": "/NV_BaoCao/LoadDataBaoCaoNhom",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "ID_NhomNhanVien" },
+                {
+                    "data": "TenNhomNhanVien",
+                },
+                {
+                    "data": "TongSoTrangDaIn",
+                },
+                {
+                    "data": "ID_NhomNhanVien", "render": function (data, type, row) {
+
+                        var row_xemchitiet = ``
+
+
+                        if (XEMCHITIET) {
+                            row_xemchitiet = `<a class="dropdown-item" onclick="xemchitiet(this)" data-model-id="${data}" >
+                                                Xem Chi Tiết
+                                            </a>`
+                        }
+                        return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        ${row_xemchitiet}
+                                      </div>
+                                    </div> `
+                    }
+                },
+            ]
+        });
+
+
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+    }
+
+    async function CheckQuyen() {
+        await $.get("/HT_ChiTietPhanQuyen/GetQuyen", { MenuCode: "NV_BaoCao" }, (data) => {
+
+            if (data.includes("XEMCHITIET")) {
+                XEMCHITIET = true;
+            }
+
+
+        })
+    }
+
+    $(document).ready(async function () {
+        await CheckQuyen()
+        loadDataTable();
+    })
+
+
+</script>
+
+

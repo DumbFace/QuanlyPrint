@@ -1,0 +1,575 @@
+﻿
+@{
+    ViewBag.Title = "Số Lượng Bản In Nhân Viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        .testimonial-group > .row {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .content-wrapper {
+            margin: 0;
+        }
+
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+
+        .overflow {
+            text-overflow: ellipsis;
+            max-width: 230px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .select2-selection__rendered .select2-selection__choice {
+            background-color: dodgerblue !important;
+        }
+        .double {
+            zoom: 1.2;
+            transform: scale(2);
+            -ms-transform: scale(2);
+            -webkit-transform: scale(2);
+            -o-transform: scale(2);
+            -moz-transform: scale(2);
+            transform-origin: 0 0;
+            -ms-transform-origin: 0 0;
+            -webkit-transform-origin: 0 0;
+            -o-transform-origin: 0 0;
+            -moz-transform-origin: 0 0;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Danh Mục Số Lượng Bản In Nhân Viên</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Filter">
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+
+                            <div class="input-group-append mr-2">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th>Tên Nhân Viên</th>
+                                    <th>IP Máy Tính</th>
+                                    <th>Không Giới Hạn</th>
+                                    <th>Nhóm Khoa Phòng</th>
+                                    <th>Tổng Bản In Trong Tháng</th>
+                                    <th width="5%">Chức Năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="modal fade" id="add-sh1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cập Nhật Số Lượng Bản In Nhân Viên</h4>
+                        <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Ajax.BeginForm("Edit_NhanVienBanIn", "DM_NhanVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess_Edit", OnFailure = "Failure_Edit", OnBegin = "FnBegin_Edit" }, new { @class = "DM_Edt form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="inputid" class="col-sm-3 col-form-label">Tên Nhân Viên<span class="text-danger">*</span></label>
+                                <div class="col-sm-9">
+                                    <select style="width: 100%" name="ID_NhanVien" id="ID_NhanVien_edt">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputid" class="col-sm-3 col-form-label">Không Giới Hạn<span class="text-danger">*</span></label>
+                                <div class="col-sm-9 double">
+                                    <input type="checkbox" name="InVoHan" id="InVoHan" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputid" class="col-sm-3 col-form-label">Nhóm Khoa Phòng<span class="text-danger">*</span></label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="KeyNhomNhanVien" id="ID_NhomNhanVien_edt" style="width: 100%;">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputid" class="col-sm-3 col-form-label">Số Lượng Bản In <span class="text-danger">*</span></label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" name="SoLuongBanInTrongThang" id="SoLuongBanInTrongThang_edt" step="1" min="0" />
+                                </div>
+                            </div>
+
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-danger closeform" data-dismiss="modal" style="width: 110px">
+                                    Đóng
+                                </button>
+                                <button type="submit" class="btn btn-primary" style="position: relative; width: 110px;" id="btn_Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute;left: 5px;top: 6px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_edit d-none">
+                                        <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                            <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                        </circle>
+                                    </svg>
+                                    Cập nhật
+                                </button>
+                            </div>
+
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var dtt;
+    var SUA = false;
+    var XOA = false;
+    var XEM = false;
+    var THEM = false;
+    var XUAT = false;
+
+    $("#Filter").keyup(function (e) {
+        dtt.columns(0).search($("#Filter").val());
+        dtt.draw();
+    });
+
+    
+    //edit function
+    async function Edit(obj) {
+        var ele = $(obj);
+        var ID = ele.data("model-id");
+        var url = `/DM_NhanVien/GetBanInNhanVien?ID_NhanVien=${ID}`
+        $("#ID_NhomNhanVien_edt").empty()
+        $("#ID_NhanVien_edt").empty()
+        await $.get(url, async (res) => {
+            await $.get(`/DM_NhanVien/GetSuaNhanVien?id=${ID}`, (data) => {
+                $("#ID_NhanVien_edt").append(`<option value="${data.ID_NhanVien}">${data.TenNhanVien}</option>`);
+                console.log(data)
+                if (data.InVoHan == true) {
+                    
+                    $("#InVoHan").prop("checked", true);
+                } else {
+                    $("#InVoHan").prop("checked", false);
+                }
+            })
+            $("#ID_NhanVien_edt").select2()
+
+            await $.get("/DM_NhomNhanVien/GetNhomNhanVien/", (data) => {
+                $.each(data, (index, value) => {
+                    $("#ID_NhomNhanVien_edt").append(`<option value="${value.KeyNhomNhanVien}">${value.TenNhomNhanVien}</option>`)
+                })
+            })
+            $("#NNVSoLuongBanInTrongThang_edt").show()
+            $("#ID_NhomNhanVien_edt").select2()
+            $("#ID_NhomNhanVien_edt").val(res.KeyNhomNhanVien)
+            $("#ID_NhomNhanVien_edt").change()
+
+           
+
+            if (res.KeyNhomNhanVien == "DEFALT") {
+                $('#SoLuongBanInTrongThang_edt').prop('readonly', false);
+                $("#SoLuongBanInTrongThang_edt").val(res.NVSoLuongBanInTrongThang)
+            } else {
+                $("#SoLuongBanInTrongThang_edt").val(res.NNVSoLuongBanInTrongThang)
+                $('#SoLuongBanInTrongThang_edt').prop('readonly', true);
+            }
+        })
+
+    };
+
+   
+    function FnBegin_Edit() {
+        $('#btn_Edit').attr("disabled", true)
+        $('.loading_edit').removeClass('d-none');
+    }
+
+    function FnSuccess_Edit(data) {
+        if (data != false) {
+            $('.loading_edit').addClass('d-none');
+            $('.closeform').click();
+            dtt.draw()
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Máy in đã được cập nhật thành công`,
+                timer: 2000,
+                showConfirmButton: false,
+            })
+        } else {
+            $('.loading_edit').addClass('d-none');
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi xảy ra',
+                text: 'Cập nhật Máy in không thành công',
+                timer: 2000,
+                showConfirmButton: false,
+            })
+        }
+        $('#btn_Edit').attr("disabled", false)
+    }
+
+    function Failure_Edit(data) {
+        $('.loading_edit').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Cập nhật Máy in không thành công',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": "/DM_NhanVien/LoadDataBanInNhanVien",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "TenNhanVien" },
+                { "data": "TenNhanVien" },
+                { "data": "Bios_MayTinh" },
+                {
+                    "data": "InVoHan", "render": function (data, type, row) {
+                        if (data == true) {
+                            return `<span style="color:green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+                                    </svg><span>`    
+                        } else {
+                            return `<span style="color:red"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square-fill" viewBox="0 0 16 16">
+                                      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                                    </svg><span>`
+                            
+                        }
+                    }
+                },
+                {
+                    "data": "TenNhomNhanVien"
+                },
+                {
+                    "data": { "KeyNhomNhanVien": "KeyNhomNhanVien", "NNVSoLuongBanInTrongThang": "NNVSoLuongBanInTrongThang", "NVSoLuongBanInTrongThang": "NVSoLuongBanInTrongThang" } , "render": function (data, type, row) {
+                        if (data.KeyNhomNhanVien != "DEFALT") {
+                            return data.NNVSoLuongBanInTrongThang
+                        } else {
+                            return data.NVSoLuongBanInTrongThang
+                        }
+                    }
+                },
+                {
+                    "data": "ID_NhanVien", "render": function (data, type, row) {
+                        var row_sua = ``
+                        var row_xoa = ``
+                        if (SUA) {
+                            row_sua = `<span class="dropdown-item" onclick="Edit(this)" data-model-id="${data}" data-toggle="modal" data-target="#add-sh1">
+                                            Cập Nhật
+                                        </span>`
+                        }
+                        if (XOA) {
+                            row_xoa = `<span class="dropdown-item" data-model-id="${data}" onclick="Delete(this)">
+                                            Xóa Dữ Liệu
+                                        </span>`
+                        }
+
+                        if (row_sua != `` || row_xoa != ``) {
+                            return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                       ${row_sua}${row_xoa}
+                                      </div>`
+                        }
+                        else return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm disabled" disabled type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                       ${row_sua}${row_xoa}
+                                      </div>`
+
+
+                    }
+                },
+            ]
+        });
+
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+
+        if (!THEM) {
+            $('#THEM').remove()
+        }
+        if (!XUAT) {
+            dtt.buttons().disable();
+        }
+    }
+
+    async function CheckQuyen() {
+        await $.get("/HT_ChiTietPhanQuyen/GetQuyen", { MenuCode: "DM_SoLuongBanIn" }, (data) => {
+            if (data.includes("XEM")) {
+                XEM = true;
+            }
+            if (data.includes("SUA")) {
+                SUA = true;
+            }
+            if (data.includes("XOA")) {
+                XOA = true;
+            }
+            if (data.includes("THEM")) {
+                THEM = true;
+            }
+            if (data.includes("XUAT")) {
+                XUAT = true;
+            }
+        })
+    }
+
+    $(document).ready(async function () {
+        await CheckQuyen()
+
+        loadDataTable();
+
+
+        $.get("/DM_NhanVien/GetNhanVien/", (data) => {
+            $("#ID_NhanVien").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#ID_NhanVien").append(`<option value="${value.ID_NhanVien}">${value.TenNhanVien}</option>`)
+            })
+          
+        })
+
+        $("#ID_NhomNhanVien_edt").select2().on('change', function () {
+            $.get(`/DM_NhanVien/GetSoLuongBanInNhanVien?ID_NhanVien=${$("#ID_NhanVien_edt").val()}&KeyNhomNhanVien=${$("#ID_NhomNhanVien_edt").val()}`, (data) => {
+                $("#SoLuongBanInTrongThang_edt").val(data)
+                if ($("#ID_NhomNhanVien_edt").val() == "DEFALT") {
+                    console.log("fasle")
+                    $('#SoLuongBanInTrongThang_edt').prop('readonly', false);
+
+                } else {
+                    console.log("true")
+                    $('#SoLuongBanInTrongThang_edt').prop('readonly', true);
+                }
+                
+            })
+        });
+
+
+        $.get("/DM_MayIn/GetMayIn/", (data) => {
+            $("#ID_MayIn").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#ID_MayIn").append(`<option value="${value.ID_MayIn}">${value.TenMayIn}</option>`)
+            })
+            $("#ID_MayIn").select2()
+        })
+
+        $('#ID_MayIn').select2({
+            placeholder: 'chọn máy in',
+            allowClear: true,
+            minimumResultsForSearch: 0,
+        })
+
+        $('#ID_MayIn_edt').select2({
+            placeholder: 'chọn máy in',
+            allowClear: true,
+            minimumResultsForSearch: 0,
+        })
+
+
+        var form = $(".DM_Create").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Vui lòng kiểm tra thông báo lỗi`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenMayIn: {
+                    required: true,
+                },
+                MaMayIn: {
+                    required: true,
+                },
+
+            },
+            messages: {
+                TenMayIn: {
+                    required: "Tên Máy in không được để trống",
+                },
+                MaMayIn: {
+                    required: "Máy in key không được để trống",
+                },
+
+            }
+        });
+        var form1 = $(".DM_Edt").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Vui lòng kiểm tra thông báo lỗi`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenMayIn: {
+                    required: true,
+                },
+                MaMayIn: {
+                    required: true,
+                },
+
+            },
+            messages: {
+                TenMayIn: {
+                    required: "Tên Máy in không được để trống",
+                },
+                MaMayIn: {
+                    required: "Máy in key không được để trống",
+                },
+
+            }
+        });
+        $(".closeform").click(function () {
+            form1.resetForm()
+        })
+    })
+
+
+</script>

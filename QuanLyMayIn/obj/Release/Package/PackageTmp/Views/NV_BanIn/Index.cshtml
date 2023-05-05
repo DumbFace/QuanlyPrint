@@ -1,0 +1,447 @@
+﻿@{
+    ViewBag.Title = "Nghiệp Vụ Bản In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            padding-top: 50px;
+            margin: auto;
+        }
+
+        #MatKhau {
+            margin-right: 10px;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Nghiệp Vụ Bản In</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Filter">
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+
+                            <div class="input-group-append mr-2">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-sh" id="THEM">
+                                    <i class="fas fa-plus pr-2"></i>Thêm Mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable" style="width: 100%;">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="3%">STT</th> 
+                                    <th>Tên Tài Liệu</th>
+                                    <th>Thời Gian In</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Trang Đã In</th>
+                                    <th>Loại Trang</th>
+                                    <th>Máy In</th>
+                                    @*<th width="5%"></th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="add-sh">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    @using (Ajax.BeginForm("Create", "NV_BanIn", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "Failure", OnBegin = "FnBegin" }, new { @class = "DM_Create form-horizontal", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="modal-header">
+                            <h4 class="modal-title">Tạo Bản In</h4>
+                            <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="inputid" class="col-sm-12 col-form-label">Tài Liệu Cần In (hỗ trợ định dạng docx, pdf, excel, image)</label>
+                                        <div class="col-sm-12">
+                                            <input type="file" class="form-control" id="BanIn" name="BanIn" style="padding: 3px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-danger closeform" data-dismiss="modal" style="width: 110px">
+                                        Đóng
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" style="width: 110px; position: relative;" id="btn_Create">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute;left: 5px;top: 6px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_create d-none">
+                                            <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                            </circle>
+                                        </svg>
+                                        Tạo Mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var dtt;
+
+    var SUA = false;
+    var XOA = false;
+    var XUAT = false;
+    var XEM = false;
+    var THEM = false;
+    var IN = false;
+
+    $("#search_btn").click(() => {
+        var searchValue = $('#Filter').val().trim()
+        dtt.column(0).search(searchValue);
+        dtt.draw()
+    })
+
+    $("#Filter").keypress(function (e) {
+        if (e.keyCode == 13) {
+            dtt.columns(0).search($("#Filter").val());
+            dtt.draw();
+        }
+    });
+
+    //create function
+    function FnBegin() {
+        $('#btn_Create').attr("disabled",true)
+        $('.loading_create').removeClass('d-none');
+    }
+
+    function FnSuccess(data) {
+        
+        $('.loading_create').addClass('d-none');
+        $('.closeform').click();
+        dtt.draw()
+        Swal.fire({
+            icon: data.status,
+            title: data.title,
+            text: data.message,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+        $('#btn_Create').attr("disabled", false)
+    }
+
+    function Failure(data) {
+        $('.loading_create').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Lỗi Hệ Thống',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+        $('#btn_Create').attr("disabled", false)
+    }
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": "/NV_BanIn/LoadData",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "ID_BanIn" },
+                {
+                    "data": { "TenTaiLieu": "TenTaiLieu", "TenTaiLieuDinhKem": "TenTaiLieuDinhKem" }, "render": function (data, type, row) {
+                        return data.TenTaiLieuDinhKem
+                    }
+                },
+
+                {
+                    "data": "ThoiGianPrint", "render": function (data, type, row) {
+
+                        if (data != null) {
+                            return moment(data).format("DD/MM/YYYY HH:mm:SS")
+                        }
+                        return 'dd/mm/yyyy hh:mm:ss'
+                    }
+                },
+                {
+                    "data": { "TrangThai": "TrangThai", "TrangThaiText": "TrangThaiText" }, "render": function (data, type, row) {
+                        if (data.TrangThai == 0 && data.TrangThaiText == "") {
+                            return `<span class="badge badge-pill badge-danger">Chưa In</span>`
+                        }
+                        else if (data.TrangThai == 0 && data.TrangThaiText != "") {
+                            return `<span class="badge badge-pill badge-warning">${data.TrangThaiText}</span>`
+                        }
+                        else {
+                            return `<span class="badge badge-pill badge-success">${data.TrangThaiText}</span>`
+                        }
+                    }
+                },
+                { "data": "TongSoTrangDaIn" },
+                {
+                    "data": "PaperSize", "render": function (data, type, row) {
+
+                        if (data != "") {
+                            return data
+                        }
+                        return ``
+                    }
+                }, 
+                {
+                    "data": "TenMayIn", "render": function (data, type, row) {
+
+                        if (data != "") {
+                            return data
+                        }
+                        return ``
+                    }
+                },
+                
+                //{
+                //    "data": { "MaTaiLieu": "MaTaiLieu", "TrangThai": "TrangThai" } , "render": function (data, type, row) {
+
+                //        var row_sua = ``
+                //        var row_xoa = ``
+                //        var row_in = ``
+                //        if (SUA) {
+                //            row_sua = `<span class="dropdown-item" onclick="Edit(this)" data-model-id="${data.MaTaiLieu}" data-toggle="modal" data-target="#add-sh1">
+                //                            Cập Nhật
+                //                        </span>`
+                //        }
+                //        if (XOA) {
+                //            row_xoa = `<span class="dropdown-item" data-model-id="${data.MaTaiLieu}" onclick="Delete(this)">
+                //                            Xóa Dữ Liệu
+                //                        </span>`
+                //        }
+
+                //        if (IN) {
+                //            row_in = `<a class="dropdown-item" href="/ban-in/xem-truoc-ban-in/${data.MaTaiLieu}" target="_blank">
+                //                            In Tài Liệu
+                //                        </a>`
+                //        }
+
+
+
+                //        if (row_sua != `` || row_xoa != `` || row_in != `` && data.TrangThai == false) {
+                //            return `<div class="dropleft">
+                //                      <button class="btn btn-outline-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                //                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                //                      </button>
+                //                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                //                       ${row_sua}${row_xoa}${row_in}
+                //                      </div>`
+                //        }
+                //        else return ``
+
+
+                //    }
+                //},
+            ]
+        });
+
+
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+
+
+        console.log("them ", THEM)
+        if (!THEM) {
+            $('#THEM').remove()
+        }
+        if (!XUAT) {
+            dtt.buttons().disable();
+        }
+    }
+
+    async function CheckQuyen() {
+        await $.get("/HT_ChiTietPhanQuyen/GetQuyen", { MenuCode: "NV_BanIn" }, (data) => {
+            if (data.includes("XEM")) {
+                XEM = true;
+            }
+            if (data.includes("SUA")) {
+                SUA = true;
+            }
+            if (data.includes("XOA")) {
+                XOA = true;
+            }
+            if (data.includes("THEM")) {
+                THEM = true;
+            }
+            if (data.includes("XUAT")) {
+                XUAT = true;
+            }
+            if (data.includes("IN")) {
+                IN = true;
+            }
+
+
+        })
+    }
+
+
+    $(document).ready(async function () {
+        await CheckQuyen()
+        loadDataTable();
+
+
+        var form = $(".DM_Create").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Vui lòng kiểm tra thông báo lỗi`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                BanIn: {
+                    required: true,
+                }
+            },
+            messages: {
+                BanIn: {
+                    required: "Tài liệu in chưa được đính kèm",
+                },
+            }
+        });
+        $(".closeform").click(function () {
+            form.resetForm()
+
+        })
+    })
+
+
+</script>
+
+<script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+<script src='/signalr/js'></script>
+<script>
+    var hubNotify = $.connection.data_Hub;
+
+    $.connection.hub.start().done(function () {
+        dtt.draw()
+    });
+
+    hubNotify.client.Update = function () {
+        dtt.draw();
+    };
+</script>

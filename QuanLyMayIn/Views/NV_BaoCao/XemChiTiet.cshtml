@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "Nghiệp Vụ Bản In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            padding-top: 50px;
+            margin: auto;
+        }
+
+        #MatKhau {
+            margin-right: 10px;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Nghiệp Vụ Bản In</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Filter">
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable" style="width: 100%;">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="3%">STT</th>
+                                    <th width="3%">Tên Nhân Viên</th>
+                                    <th>Tên Tài Liệu</th>
+                                    <th>Thời Gian Upload</th>
+                                    <th>Thời Gian In</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Tổng Số Trang Đã In</th>
+                                    <th>Máy In</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ID_NhanVien = urlParams.get('ID_NhanVien');
+    const month = urlParams.get('month');
+    var dtt;
+
+    $("#Filter").keyup(function (e) {
+        dtt.columns(0).search($("#Filter").val());
+        dtt.draw();
+    });
+
+    //create function
+    function FnBegin() {
+        $('.loading_create').removeClass('d-none');
+    }
+
+    function FnSuccess(data) {
+        $('.loading_create').addClass('d-none');
+        $('.closeform').click();
+        dtt.draw()
+        Swal.fire({
+            icon: data.status,
+            title: data.title,
+            text: data.message,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    function Failure(data) {
+        $('.loading_create').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Lỗi Hệ Thống',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": `/NV_BaoCao/LoadDataChiTiet?ID_NhanVien=${ID_NhanVien}&month=${month}`,
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "ID_BanIn" },
+                { "data": "TenNhanVien" },
+                {
+                    "data": { "TenTaiLieu": "TenTaiLieu", "TenTaiLieuDinhKem":"TenTaiLieuDinhKem"}, "render": function (data, type, row) {
+                        return data.TenTaiLieuDinhKem
+                    }
+                },
+                {
+                    "data": "ThoiGianUpload", "render": function (data, type, row) {
+                        return moment(data).format("DD/MM/YYYY HH:MM:SS")
+                    }
+                },
+
+                {
+                    "data": "ThoiGianPrint", "render": function (data, type, row) {
+
+                        if (data != null) {
+                            return moment(data).format("DD/MM/YYYY HH:MM:SS")
+                        }
+                        return 'dd/mm/yyyy hh:mm:ss'
+                    }
+                },
+                {
+                    "data": { "TrangThai": "TrangThai","TrangThaiText":"TrangThaiText" }, "render": function (data, type, row) {
+                        if (data.TrangThai == false && data.TrangThaiText == "" || data.TrangThaiText == "Chưa Được In") {
+                            return `<span class="badge badge-pill badge-danger">Chưa In</span>`
+                        }
+                        else if (data.TrangThai == false && data.TrangThaiText != "") {
+                            return `<span class="badge badge-pill badge-warning">${data.TrangThaiText}</span>`
+                        }
+                        else {
+                            return `<span class="badge badge-pill badge-success">${data.TrangThaiText}</span>`
+                        }
+                    }
+                },
+                { "data": "TongSoTrangDaIn" },
+
+                {
+                    "data": "TenMayIn", "render": function (data, type, row) {
+
+                        if (data != "") {
+                            return data
+                        }
+                        return `<span class="badge badge-pill badge-danger">Chưa in</span>`
+                    }
+                },
+                {
+                    "data": "MaTaiLieu", "render": function (data, type, row) {
+                        return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                        <a class="dropdown-item" href="/ban-in/xem-truoc-ban-in/${data}" >
+                                            In Tài Liệu
+                                        </a>
+
+                                      </div>
+                                    </div> `
+                    }
+                },
+            ]
+        });
+
+
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+    }
+
+    $(document).ready(function () {
+
+        loadDataTable();
+
+
+    })
+
+
+</script>

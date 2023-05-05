@@ -1,0 +1,11 @@
+﻿.area-absolute-auto-style {
+    position: absolute;
+    z-index: 999;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 1px 10px 0 #ccc;
+    width: 320px !important;
+}

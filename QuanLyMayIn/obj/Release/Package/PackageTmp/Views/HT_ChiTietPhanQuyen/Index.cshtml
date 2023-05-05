@@ -1,0 +1,330 @@
+﻿@{
+    ViewBag.Title = "Danh Mục Quyền";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    <style>
+        td {
+            white-space: nowrap !important;
+        }
+
+        th:nth-child(1) {
+            text-align: left !important;
+        }
+
+        td:nth-child(1) {
+            text-align: left !important;
+        }
+    </style>
+
+}
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="loading d-none" style="margin: auto; background: none; display: block; shape-rendering: auto; margin-bottom: -65px;" width="80px" height="80px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+    <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#93dbe9" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+    </circle>
+</svg>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Phân quyền</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card elevation-3">
+                @using (Ajax.BeginForm("Edit", "HT_ChiTietPhanQuyen", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "FnFailure", OnBegin = "FnBegin" }, new { @class = "formPhongBan form-horizontal" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="card-header">
+                        <div class="form-group row">
+                            <label for="input" class="col-sm-2 col-form-label">Chọn Nhóm Quyền</label>
+                            <div class="col-sm-5">
+                                <select class="form-control" id="MaNhomQuyen" name="MaNhomQuyen">
+                                </select>
+                            </div>
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-2 input-group-append justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="capnhat" style=" position: relative;">
+                                    <i class="fas fa-save pr-2"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute;left: 3px;top: 8px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_newphongban d-none">
+                                        <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                            <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                        </circle>
+                                    </svg>Cập Nhật
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
+                            <tbody id="datatable">
+                                <input type="text" name="NhomTaiKhoan" id="NhomTaiKhoan" value="" hidden />
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<script>
+
+    $.get("/DM_NhomTaiKhoan/GetNhomTaiKhoan", (data) => {
+        $.each(data, (index, item) => {
+            $("#MaNhomQuyen").append($('<option>', {
+                value: item.KeyNhomTaiKhoan,
+                text: item.TenNhomTaiKhoan
+            }));
+        })
+
+        $("#MaNhomQuyen").select2()
+    })
+
+    var row = `<tr class="expandable-body">
+                                 <tr class="expandable-body" >
+                                    <td>
+                                        <div class="p-0">
+                                            <table class="table table-hover">
+                                                <tbody>
+                                                    <tr data-widget="expandable-table" aria-expanded="true">
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary p-0">
+                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                            </button>
+                                                            <strong class="text-primary">Hệ Thống</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="expandable-body" id="datatable_DM">
+                                                        <td>
+                                                            <div class="p-0">
+                                                                <table class="table table-hover">
+                                                                    <tbody id="HeThong">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="expandable-body" >
+                                    <td>
+                                        <div class="p-0">
+                                            <table class="table table-hover">
+                                                <tbody>
+                                                    <tr data-widget="expandable-table" aria-expanded="true">
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary p-0">
+                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                            </button>
+                                                            <strong class="text-primary">Danh Mục</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="expandable-body" id="datatable_DM">
+                                                        <td>
+                                                            <div class="p-0">
+                                                                <table class="table table-hover">
+                                                                    <tbody id="DanhMuc">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="expandable-body" >
+                                    <td>
+                                        <div class="p-0">
+                                            <table class="table table-hover">
+                                                <tbody>
+                                                    <tr data-widget="expandable-table" aria-expanded="true">
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary p-0">
+                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                            </button>
+                                                            <strong class="text-primary">Nghiệp Vụ</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="expandable-body" id="datatable_DM">
+                                                        <td>
+                                                            <div class="p-0">
+                                                                <table class="table table-hover">
+                                                                    <tbody id="NghiepVu">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+`
+
+    $("#datatable").append(row)
+
+    function FnBegin() {
+        $('#btn_Create').attr("disabled", true)
+        $('.loading_newphongban').removeClass('d-none');
+    }
+
+    function FnSuccess(data) {
+        $('.loading_newphongban').addClass('d-none');
+        $('.close').click();
+        if (data != false) {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Phòng ban ${data.TenPhongBan} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(() => { location.reload() })
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi',
+                text: `Thêm phòng ban không thành công`,
+                timer: 2000,
+                showConfirmButton: false,
+            })
+        }
+        $('#btn_Create').attr("disabled", false)
+    }
+
+    function FnFailure(data) {
+        $('.loading_newphongban').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi',
+            text: `Mã phòng ban đã tồn tại!`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    async function getChiTietPhanQuyen(MaNhomQuyen, IDKeyMenu, ID) {
+        var text = ``
+        await $.get(`HT_ChiTietPhanQuyen/GetChiTietPhanQuyen?MaNhomQuyen=${MaNhomQuyen}&Menu=${IDKeyMenu}`, async (datachitiet) => {
+           
+            await $.each(datachitiet, (indexchitiet, itemchitiet) => {
+                console.log(itemchitiet)
+                if (itemchitiet.TrangThai == false) {
+                    text += `
+                                <div class="icheck-primary d-inline pr-5">
+                                    <input type="checkbox" id="${itemchitiet.ID_ChiTietPhanQuyen}" name="ID_ChiTietPhanQuyen[]" value="${itemchitiet.ID_ChiTietPhanQuyen}">
+                                    <label for="${itemchitiet.ID_ChiTietPhanQuyen}">
+                                        ${itemchitiet.TenChucNang}
+                                    </label>
+                                </div>
+                                    `
+                } else {
+                    text += `
+                                    <div class="icheck-primary d-inline pr-5">
+                                         <input type="checkbox" id="${itemchitiet.ID_ChiTietPhanQuyen}" checked name="ID_ChiTietPhanQuyen[]" value="${itemchitiet.ID_ChiTietPhanQuyen}">
+                                        <label for="${itemchitiet.ID_ChiTietPhanQuyen}">
+                                            ${itemchitiet.TenChucNang}
+                                        </label>
+                                    </div>
+                                    `
+                   
+                }
+            })
+            console.log(IDKeyMenu)
+            console.log(text)
+            $(`#${IDKeyMenu}`).append(text)
+        })
+
+     
+    }
+
+    function showPhanQuyen() {
+        var hethong = ``
+        var danhmuc = ``
+        var nghiepvu = ``
+        $("#HeThong").empty();
+        $("#DanhMuc").empty();
+        $("#NghiepVu").empty();
+
+        var MaNhomQuyen =  $("#MaNhomQuyen").val()
+         $.get("HT_ChiTietPhanQuyen/GetMenuPhanQuyen", async (data) => {
+            await $.each(data, async (index, item) => {
+                if (item.TypeMenu == "HT") {
+
+                    hethong = `<tr >
+                                <td><strong class="text-primary">${item.TenMenu}</strong></td>
+                                <td>
+                                    <div class="form-group clearfix" id=${item.KeyMenu}>
+                                
+                                    </div>
+                                    </td>
+                                </tr>
+                               `
+                 
+
+                    await $("#HeThong").append(hethong)
+                    getChiTietPhanQuyen(MaNhomQuyen, item.KeyMenu, "HeThong")
+                } else if (item.TypeMenu == "DM") {
+
+                    danhmuc = `<tr >
+                                <td><strong class="text-primary">${item.TenMenu}</strong></td>
+                                <td>
+                                    <div class="form-group clearfix" id=${item.KeyMenu}>
+                                
+                                    </div>
+                                    </td>
+                                </tr>
+                               `
+                    await $("#DanhMuc").append(danhmuc)
+                    getChiTietPhanQuyen(MaNhomQuyen, item.KeyMenu, "DanhMuc")
+                } else if (item.TypeMenu == "NV") {
+                    nghiepvu = `<tr >
+                                <td><strong class="text-primary">${item.TenMenu}</strong></td>
+                                <td>
+                                    <div class="form-group clearfix" id=${item.KeyMenu}>
+                                
+                                    </div>
+                                    </td>
+                                </tr>
+                               `
+                    await $("#NghiepVu").append(nghiepvu)
+                    getChiTietPhanQuyen(MaNhomQuyen, item.KeyMenu, "NghiepVu")
+                }
+                
+            })
+            
+            //get menu
+            
+        })
+    }
+    $(document).ready(async function () {
+        await showPhanQuyen()
+        
+        $('#MaNhomQuyen').select2().on('change', (data) => {
+            showPhanQuyen()
+        });
+
+
+    })
+
+
+</script>

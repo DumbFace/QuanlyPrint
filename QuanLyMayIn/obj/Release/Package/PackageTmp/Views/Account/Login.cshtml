@@ -1,0 +1,303 @@
+﻿
+@{
+    ViewBag.Title = "Đăng Nhập";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng Nhập</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.all.min.js"></script>
+    <style>
+        #intro {
+            background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);
+            height: 100vh;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body class="hold-transition login-page" id="intro">
+    <div class="login-box elevation-2">
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <div class="text-center" style="height: 53px; overflow: hidden">
+                    <img src="https://yduoc.vinaai.com/Images/logo-sm.png" alt="user-avatar" class="img-fluid">
+                </div>
+            </div>
+            <div class="card-body">
+                <h3 class="login-box-msg text-primary">Đăng Nhập Hệ Thống</h3>
+
+                @using (Ajax.BeginForm("Login", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "FnFail", OnBegin = "FnBegin" }, new { @class = "user" }))
+                {
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user text-primary"></span>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Tên Đăng Nhập" name="UserName" id="UserName">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock text-primary"></span>
+                            </div>
+                        </div>
+                        <input type="password" class="form-control" placeholder="Mật khẩu" name="Password" id="Password">
+                    </div>
+
+                    <div class="social-auth-links text-center mt-2 mb-3">
+                        <button type="submit" class="btn btn-primary btn-block align-items-center" style="position: relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute; left: 94px; top: 8px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading d-none">
+                                <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                    <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                </circle>
+                            </svg>
+                            Đăng Nhập
+                        </button>
+                    </div>
+                    <div class="input-group-append mr-2">
+                        <a href="#" data-toggle="modal" data-target="#add-sh" id="them">
+                            <i class="fas fa-plus pr-2"></i>Quên mật khẩu
+                        </a>
+                    </div>
+                }
+
+
+            </div>
+            <div class="modal fade" id="add-sh">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-primary">QUÊN MẬT KHẨU</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="login-box-msg">
+                                <strong>Xin nhập Email đã đăng kí.</strong><br />
+                                <span>Sau khi nhập đúng email, hệ thống sẽ gửi mã code đến email của bạn. vui lòng kiểm tra.</span>
+                            </p>
+                            <div class="input-group mb-3">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-hand-point-right text-primary"></span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Examplevn@gmail.com" name="SoDienThoai" id="Email" required autofocus>
+
+                            </div>
+                            <center> <span id="error-email" style="color: red"></span></center>
+                            <div class="modal-footer justify-content-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute; left: 94px; top: 8px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_QMK d-none">
+                                    <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                    </circle>
+                                </svg>
+                                <button type="submit" class="btn btn-primary" id="resetPassWord">XÁC NHẬN</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="add-sh-resetpassword">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-primary">Mật khẩu mới</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @using (Ajax.BeginForm("EditMatKhau", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess_edtMK", OnFailure = "FnFail_edtMK", OnBegin = "FnBegin_edtMK" }, new { @class = "EditPassword" }))
+                            {
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" style="width: 150px">
+                                            <span>Tên tài khoản </span>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="" name="TenTaiKhoan" id="TenTaiKhoan" required autofocus>
+
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" style="width: 150px">
+                                            <span>Mã xác nhận * </span>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="" name="Code" id="Code" required>
+
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" style="width: 150px">
+                                            <span>Mật khẩu mới  * </span>
+                                        </div>
+                                    </div>
+                                    <input type="password" class="form-control" name="MatKhau" id="MatKhau" required>
+
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" style="width: 150px">
+                                            <span>Xác nhận mật khẩu  * </span>
+                                        </div>
+                                    </div>
+                                    <input type="password" class="form-control" name="XNMatKhau" id="XNMatKhau" required>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute; left: 94px; top: 8px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_edtMK d-none">
+                                        <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                            <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                        </circle>
+                                    </svg>
+                                    <button type="submit" class="btn btn-primary"> XÁC NHẬN</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/dist/js/adminlte.min.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+</body>
+</html>
+
+<script>
+    function FnBegin(data) {
+        $('.loading').removeClass('d-none')
+    }
+
+    function FnSuccess(data) {
+
+        $('.loading').addClass('d-none')
+        location.replace(data)
+    }
+
+    function FnFail(data) {
+        $('.loading').addClass('d-none')
+        Swal.fire({
+            icon: 'error',
+            title: 'Thông tin đăng nhập không chính xác',
+            text: `Vui lòng kiểm tra email và password của bạn`,
+            timer: 2000,
+            showConfirmButton: false
+        })
+    }
+
+    function FnBegin_edtMK(data) {
+        $('.loading_edtMK').removeClass('d-none')
+    }
+
+    function FnSuccess_edtMK(data) {
+        $('.loading_edtMK').addClass('d-none')
+        if (data.status == false) {
+            FnFail_edtMK(data.message);
+        } else if (data.status == true) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Đổi mật khẩu thành công',
+                text: 'Đổi mật khẩu thành công, hãy đăng nhập lại',
+                timer: 2000,
+                showConfirmButton: false
+            })
+            location.reload();
+        }
+    }
+
+    function FnFail_edtMK(data) {
+        $('.loading_edtMK').addClass('d-none')
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: data,
+            timer: 2000,
+            showConfirmButton: false
+        })
+    }
+
+    function FnBegin_QMK(data) {
+        $('.loading_QMK').removeClass('d-none')
+    }
+
+    function FnSuccess_QMK(data) {
+        $('.loading_QMK').addClass('d-none')
+        location.replace(data)
+    }
+
+    function FnFail_QMK() {
+        $('.loading_QMK').addClass('d-none')
+        Swal.fire({
+            icon: 'error',
+            title: 'Thông tin Email không chính xác',
+            text: `Vui lòng kiểm tra email lại`,
+            timer: 2000,
+            showConfirmButton: false
+        })
+    }
+
+
+    $('.modal').on('shown.bs.modal', function () {
+        $(this).find('[autofocus]').focus();
+    });
+
+    $("#resetPassWord").click(() => {
+        var email = $("#Email").val()
+        if (email != "") {
+            $.ajax({
+                url: "/Account/ResetMatKhau/",
+                type: "post",
+                dataType: "text",
+                data: {
+                    SoDienThoai: email
+                },
+                success: function (result) {
+                    if (result == "false") {
+                        FnFail_QMK()
+                    } else {
+                        console.log(result)
+                        $('#add-sh-resetpassword').modal('show')
+                    }
+
+                }
+            });
+        } else {
+            $("#error-email").html("Vui lòng nhập email");
+            $("#error-email").color = "red";
+        }
+    })
+
+    $("#Email").focusin(function () {
+        $("#error-email").html("");
+    })
+
+    $("#Email").focusout(function () {
+        var email = $("#Email").val()
+        if (email == "") {
+            $("#error-email").html("Vui lòng nhập email");
+            $("#error-email").color = "red";
+        }
+    })
+
+</script>

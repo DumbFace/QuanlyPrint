@@ -1,0 +1,9 @@
+﻿
+@{
+    ViewBag.Title = "Xem Trước Bản In";
+}
+<script src="https://unpkg.com/pdfobject@2.2.8/pdfobject.min.js"></script>
+<script>
+    var myPDF = PDFObject.embed(`../../Content/uploads/@ViewBag.TenFile`, document.body);
+</script>
+

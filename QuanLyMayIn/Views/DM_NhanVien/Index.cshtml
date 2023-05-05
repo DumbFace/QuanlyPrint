@@ -1,0 +1,770 @@
+﻿@{
+    ViewBag.Title = "Danh Sách Máy Tính";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            padding-top: 50px;
+            margin: auto;
+        }
+
+        #MatKhau {
+            margin-right: 10px;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Danh Mục Máy Tính</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Filter">
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+
+                            <div class="input-group-append mr-2">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-sh" id="THEM">
+                                    <i class="fas fa-plus pr-2"></i>Thêm Mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th>Tên Khoa Phòng</th>
+                                    <th>IP Máy Tính</th>
+                                    <th>Nhóm Khoa Phòng</th>
+                                    <th width="5%">Chức Năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+        <div class="modal fade" id="add-sh">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    @using (Ajax.BeginForm("Create", "DM_NhanVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "Failure", OnBegin = "FnBegin" }, new { @class = "DM_Create form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="modal-header">
+                            <h4 class="modal-title">Thêm Danh Mục Máy Tính</h4>
+                            <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-4 ">
+                                        <label for="inputid" class="col-sm-12 col-form-label">Tên Khoa Phòng<span class="text-danger">*</span></label>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" id="TenNhanVien" name="TenNhanVien" placeholder="nhập tên Khoa Phòng">
+                                            <input type="number" class="form-control" id="SoLuongBanInTrongThang" name="SoLuongBanInTrongThang" value="0" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="inputid" class="col-sm-12 col-form-label">IP Máy Tính<span class="text-danger">*</span></label>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" id="Bios_MayTinh" name="Bios_MayTinh" placeholder="Nhập IP Máy Tính" />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="inputid" class="col-sm-12 col-form-label">Nhóm Khoa Phòng<span class="text-danger">*</span></label>
+                                        <div class="col-sm-12">
+                                            <select style="width: 100%" name="KeyNhomNhanVien" id="KeyNhomNhanVien">
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="form-group row">
+                                   
+                                   
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-danger closeform" data-dismiss="modal" style="width: 110px">
+                                        Đóng
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" style="width: 110px; position: relative;" id="btn_Create">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute;left: 5px;top: 6px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_create d-none">
+                                            <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                            </circle>
+                                        </svg>
+                                        Lưu Mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add-sh1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cập Nhật Danh Mục Máy Tính</h4>
+                        <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Ajax.BeginForm("Edit", "DM_NhomTaiKhoan", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess_Edit", OnFailure = "Failure_Edit", OnBegin = "FnBegin_Edit" }, new { @class = "DM_Edt form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-4 ">
+                                    <label for="inputid" class="col-sm-12 col-form-label">Tên Khoa Phòng<span class="text-danger">*</span></label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="TenNhanVien_edt" name="TenNhanVien" placeholder="nhập tên Khoa Phòng">
+                                        <input type="text" class="form-control" id="ID_NhanVien_edt" name="ID_NhanVien" hidden>
+                                        <input type="number" class="form-control" id="SoLuongBanInTrongThang_edt" name="SoLuongBanInTrongThang" hidden>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label for="inputid" class="col-sm-12 col-form-label">IP Máy Tính<span class="text-danger">*</span></label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="Bios_MayTinh_edt" name="Bios_MayTinh" placeholder="Nhập IP Máy Tính" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label for="inputid" class="col-sm-12 col-form-label">Nhóm Khoa Phòng<span class="text-danger">*</span></label>
+                                    <div class="col-sm-12">
+                                        <select style="width: 100%" name="KeyNhomNhanVien" id="KeyNhomNhanVien_edt">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                
+                                
+                                
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-danger closeform" data-dismiss="modal" style="width: 110px">
+                                    Đóng
+                                </button>
+                                <button type="submit" class="btn btn-primary" style="position: relative; width: 110px;" id="btn_Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: block; shape-rendering: auto; margin: 0px; padding: 0px; width: 20px; height: 20px; position: absolute;left: 5px;top: 6px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="loading_edit d-none">
+                                        <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#ffffff" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+                                            <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                                        </circle>
+                                    </svg>
+                                    Cập nhật
+                                </button>
+                            </div>
+
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var dtt;
+
+    var SUA = false;
+    var XOA = false;
+    var XEM = false;
+    var THEM = false;
+    var XUAT = false;
+
+    $("#Filter").keyup(function (e) {
+        dtt.columns(0).search($("#Filter").val());
+        dtt.draw();
+    });
+
+    //create function
+    function FnBegin() {
+        $('#btn_Create').attr("disabled", true)
+        $('.loading_create').removeClass('d-none');
+    }
+
+    function FnSuccess(data) {
+        $('.loading_create').addClass('d-none');
+        $('.closeform').click();
+        dtt.draw()
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Khoa Phòng đã được thêm thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+        $('#btn_Create').attr("disabled", false)
+    }
+
+    function Failure(data) {
+        $('.loading_create').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Thêm mới Khoa Phòng không thành công',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    //edit function
+    function Edit(obj) {
+
+      
+        $.get("/DM_NhomTaiKhoan/GetNhomTaiKhoan/", (data) => {
+            $("#KeyNhomTaiKhoan_edt").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#KeyNhomTaiKhoan_edt").append(`<option value="${value.KeyNhomTaiKhoan}">${value.TenNhomTaiKhoan}</option>`)
+            })
+        })
+
+        $.get("/DM_NhomNhanVien/GetNhomNhanVien/", (data) => {
+            $("#KeyNhomNhanVien_edt").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#KeyNhomNhanVien_edt").append(`<option value="${value.KeyNhomNhanVien}">${value.TenNhomNhanVien}</option>`)
+            })
+            $("#KeyNhomNhanVien_edt").select2() 
+        })
+
+
+
+        var ele = $(obj);
+        var ID = ele.data("model-id");
+        var url = `/DM_NhanVien/GetSuaNhanVien`
+        $.get(url, { id: ID }, (data) => {
+            $('#ID_NhanVien_edt').val(data.ID_NhanVien)
+            $('#TenNhanVien_edt').val(data.TenNhanVien)
+            
+            $('#Bios_MayTinh_edt').val(data.Bios_MayTinh)
+            
+            $('#KeyNhomNhanVien_edt').val(data.KeyNhomNhanVien)
+            $('#KeyNhomNhanVien_edt').change();
+            $('#SoLuongBanInTrongThang_edt').val(data.SoLuongBanInTrongThang);
+            
+        })
+
+        $("#KeyNhomTaiKhoan_edt").select2()
+    };
+
+    function FnBegin_Edit() {
+        $('#btn_Edit').attr("disabled", true)
+        $('.loading_edit').removeClass('d-none');
+    }
+
+    function FnSuccess_Edit(data) {
+        if (data != false) {
+            $('.loading_edit').addClass('d-none');
+            $('.closeform').click();
+            dtt.draw()
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Khoa Phòng đã được cập nhật thành công`,
+                timer: 2000,
+                showConfirmButton: false,
+            })
+        } else {
+            $('.loading_edit').addClass('d-none');
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi xảy ra',
+                text: 'Cập nhật Khoa Phòng không thành công',
+                timer: 2000,
+                showConfirmButton: false,
+            })
+        }
+        $('#btn_Edit').attr("disabled", false)
+    }
+
+    function Failure_Edit(data) {
+        $('.loading_edit').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Cập nhật Khoa Phòng không thành công',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    //delete function
+    function Delete(obj) {
+        var ele = $(obj);
+        var ID = ele.data("model-id");
+        var url = `/DM_NhanVien/Delete`
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: ID })
+                    .done(function (data) {
+                        dtt.draw()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Nhóm Tài Khoản đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false,
+                        })
+                    })
+                    .fail(function (data) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Không thành công',
+                            text: `Xảy ra lỗi`,
+                            timer: 2000,
+                            showConfirmButton: false,
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
+
+            }
+        })
+    }
+
+    $(".toggle-password").click(function () {
+
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": "/DM_NhanVien/LoadData",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "ID_NhanVien" },
+                { "data": "TenNhanVien" },
+                { "data": "Bios_MayTinh" },
+                { "data": "TenNhomNhanVien" },
+                {
+                    "data": "ID_NhanVien", "render": function (data, type, row) {
+
+                        if (data == 1) {
+                            return ""
+                        } else {
+                            var row_sua = ``
+                            var row_xoa = ``
+                            if (SUA) {
+                                row_sua = `<span class="dropdown-item" onclick="Edit(this)" data-model-id="${data}" data-toggle="modal" data-target="#add-sh1">
+                                            Cập Nhật
+                                        </span>`
+                            }
+                            if (XOA) {
+                                row_xoa = `<span class="dropdown-item" data-model-id="${data}" onclick="Delete(this)">
+                                            Xóa Dữ Liệu
+                                        </span>`
+                            }
+
+                            if (row_sua != `` || row_xoa != ``) {
+                                return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                       ${row_sua}${row_xoa}
+                                      </div>`
+                            }
+                            else return `<div class="dropleft">
+                                      <button class="btn btn-outline-info btn-sm disabled" disabled type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 13px;">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                       ${row_sua}${row_xoa}
+                                      </div>`
+
+
+                        }
+                       
+
+
+                    }
+                },
+            ]
+        });
+
+   
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+
+        if (!THEM) {
+            $('#THEM').remove()
+        }
+        if (!XUAT) {
+            dtt.buttons().disable();
+        }
+    }
+
+
+
+
+    async function CheckQuyen() {
+        await $.get("/HT_ChiTietPhanQuyen/GetQuyen", { MenuCode: "DM_NhanVien" }, (data) => {
+            if (data.includes("XEM")) {
+                XEM = true;
+            }
+            if (data.includes("SUA")) {
+                SUA = true;
+            }
+            if (data.includes("XOA")) {
+                XOA = true;
+            }
+            if (data.includes("THEM")) {
+                THEM = true;
+            }
+            if (data.includes("XUAT")) {
+                XUAT = true;
+            }
+        })
+    }
+
+    $(document).ready(async function () {
+        await CheckQuyen()
+
+
+
+        await loadDataTable();
+
+
+       
+        $("#KeyNhomTaiKhoan").select2()
+        $.get("/DM_NhomTaiKhoan/GetNhomTaiKhoan/", (data) => {
+            $("#KeyNhomTaiKhoan").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#KeyNhomTaiKhoan").append(`<option value="${value.KeyNhomTaiKhoan}">${value.TenNhomTaiKhoan}</option>`)
+            })
+        })
+        $.get("/DM_NhomNhanVien/GetNhomNhanVien/", (data) => {
+            $("#KeyNhomNhanVien").empty();
+            //$("#KeyNhomTaiKhoan").append("<option value=''>chọn cơ quan/đơn vị</option>")
+            $.each(data, (index, value) => {
+                $("#KeyNhomNhanVien").append(`<option value="${value.KeyNhomNhanVien}">${value.TenNhomNhanVien}</option>`)
+            })
+        })
+
+        $("#KeyNhomTaiKhoan").select2()
+        $("#KeyNhomNhanVien").select2()
+        var form = $(".DM_Create").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Vui lòng kiểm tra thông báo lỗi`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenNhanVien: {
+                    required: true,
+                },
+                SoDienThoai: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/EmailTonTai/",
+                        type: "post",
+                        dataType: 'json',
+                    },
+                    email: true
+                },
+                Bios_MayTinh: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/CheckBIOS/",
+                        type: "post",
+                        dataType: 'json',
+                    },
+                },
+                TenTaiKhoan: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/CheckTaiKhoan/",
+                        type: "post",
+                        dataType: 'json',
+                    },
+                },
+                MatKhau: {
+                    required: true,
+                },
+                KeyNhomTaiKhoan: {
+                    required: true,
+                },
+                KeyNhomNhanVien: {
+                    required: true,
+                },
+            },
+            messages: {
+                TenNhanVien: {
+                    required: "Tên Khoa Phòng không được để trống",
+                },
+                SoDienThoai: {
+                    required: "Email không được để trống",
+                    remote: "Email đã được sử dụng",
+                    email: "Email không hợp lệ"
+                },
+                Bios_MayTinh: {
+                    required: "IP Máy Tính không được để trống",
+                    remote: "IP Máy Tính đã được sử dụng",
+                },
+                TenTaiKhoan: {
+                    required: "Tên tài khoản không được để trống",
+                    remote: "Tài khoản đã bị trùng",
+                },
+                MatKhau: {
+                    required: "Mật khẩu không được để trống",
+                },
+                KeyNhomTaiKhoan: {
+                    required: "Nhóm tài khoản không được để trống",
+                },
+                KeyNhomNhanVien: {
+                    required: "Nhóm Khoa Phòng không được để trống",
+                },
+            }
+        });
+        var form1 = $(".DM_Edt").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Vui lòng kiểm tra thông báo lỗi`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenNhanVien: {
+                    required: true,
+                },
+                SoDienThoai: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/EmailTonTai_DoiEmail/",
+                        type: "post",
+                        dataType: 'json',
+                        data: {
+                            Ma_CanBo: function () {
+                                return $("#ID_NhanVien_edt").val();
+                            }
+                        }
+                    },
+                    email: true
+                },
+                Bios_MayTinh: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/CheckEditBIOS/",
+                        type: "post",
+                        dataType: 'json',
+                        data: {
+                            Ma_CanBo: function () {
+                                return $("#ID_NhanVien_edt").val();
+                            }
+                        }
+                    }
+                },
+                TenTaiKhoan: {
+                    required: true,
+                    remote: {
+                        url: "/DM_NhanVien/CheckTaiKhoan1/",
+                        type: "post",
+                        dataType: 'json',
+                        data: {
+                            Ma_CanBo: function () {
+                                return $("#ID_NhanVien_edt").val();
+                            }
+                        }
+                    }
+                },
+                MatKhau: {
+                    required: true,
+                },
+                KeyNhomTaiKhoan: {
+                    required: true,
+                },
+                KeyNhomNhanVien: {
+                    required: true,
+                },
+            },
+            messages: {
+                TenNhanVien: {
+                    required: "Tên Khoa Phòng không được để trống",
+                },
+                SoDienThoai: {
+                    required: "Email không được để trống",
+                    remote: "Email đã được sử dụng",
+                    email: "Email không hợp lệ"
+                },
+                Bios_MayTinh: {
+                    required: "IP Máy Tính không được để trống",
+                    remote: "IP Máy Tính đã được sử dụng",
+                },
+                TenTaiKhoan: {
+                    required: "Tên tài khoản không được để trống",
+                    remote: "Tài khoản đã bị trùng",
+                },
+                MatKhau: {
+                    required: "Mật khẩu không được để trống",
+                },
+                KeyNhomTaiKhoan: {
+                    required: "Nhóm tài khoản không được để trống",
+                },
+                KeyNhomNhanVien: {
+                    required: "Nhóm Khoa Phòng không được để trống",
+                },
+            }
+        });
+        $(".closeform").click(function () {
+            form.resetForm()
+            form1.resetForm()
+        })
+    })
+
+
+</script>

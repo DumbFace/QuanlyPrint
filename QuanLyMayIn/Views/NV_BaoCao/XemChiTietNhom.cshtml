@@ -1,0 +1,371 @@
+﻿@{
+    ViewBag.Title = "Nghiệp Vụ Bản In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        #dataTable_filter input {
+            display: none;
+        }
+
+        .no-footer {
+            border-bottom: none;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .dt-buttons {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 8px;
+        }
+
+        .card-tools {
+            position: absolute;
+            right: 10px;
+            top: 11px;
+            z-index: 999;
+        }
+
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            padding-top: 50px;
+            margin: auto;
+        }
+
+        #MatKhau {
+            margin-right: 10px;
+        }
+    </style>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a href="/">Trang Chủ</a></li>
+                    <li class="breadcrumb-item active">Nghiệp Vụ Bản In</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row dt1">
+            <div class="col-12">
+                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm row">
+                            <div class="input-group-append mr-3">
+                                <select class="form-control" id="filter">
+                                   <option value="all">Chọn</option>
+                                </select>
+                            </div>
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Search">
+
+
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-default" id="search_btn">
+                                    <i class="fas fa-search text-primary"></i>
+                                </button>
+                            </div>
+
+                            <div class="input-group-append mr-3">
+                                <button type="submit" class="btn btn-primary" id="PrintBaoCao">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                        <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                    </svg> Tải Báo Cáo
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="card-body text-nowrap table-bordered p-0">
+
+                        <table class="table table-hover text-nowrap table-bordered horizontal-scrollable" id="dataTable" style="width: 100%;">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th width="3%">STT</th>
+                                    <th>Tên Khoa Phòng</th>
+                                    <th>Ip Máy Tính</th>
+                                    <th>Tên Tài Liệu</th>
+                                    <th>Thời Gian In</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Trang Đã In</th>
+                                    <th>Loại Trang</th>
+                                    <th>Máy In</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" style="text-align:right">Tổng Trang Đã in:</th>
+                                    <th colspan="3" class="sum"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix" style="height: 50px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ID_NhomNhanVien = urlParams.get('ID_NhomNhanVien');
+    const month = urlParams.get('month');
+    var dtt;
+    var PaperSize = ""
+
+    $("#Search").keyup(function (e) {
+        dtt.columns(0).search($("#Search").val());
+        dtt.draw();
+    });
+
+    $("#filter").change(function (e) {
+        PaperSize = $("#filter").val()
+        dtt.columns(1).search($("#filter").val());
+        dtt.draw();
+    });
+
+
+    //create function
+    function FnBegin() {
+        $('.loading_create').removeClass('d-none');
+    }
+
+    function FnSuccess(data) {
+        $('.loading_create').addClass('d-none');
+        $('.closeform').click();
+        dtt.draw()
+        Swal.fire({
+            icon: data.status,
+            title: data.title,
+            text: data.message,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    function Failure(data) {
+        $('.loading_create').addClass('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Lỗi Hệ Thống',
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    //loading datatables
+    function loadDataTable() {
+        dtt = $("#dataTable").DataTable({
+            "lengthChange": false,
+            "info": false,
+            "searching": true,
+            "language": {
+                "search": "",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "next": "»",
+                    "previous": "«"
+                },
+                "processing": `Đang tải dữ liệu`,
+                searchPlaceholder: "Tìm...",
+                zeroRecords: "Không tìm thấy kết quả",
+
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: '<i class="fa fa-file-excel"></i>',
+                    extend: 'excel',
+                    className: 'btn btn-outline-primary btn-sm mt-2 ml-3'
+                },
+                {
+                    text: '<i class="fa fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                },
+                {
+                    text: '<i class="fa fa-print"></i>',
+                    extend: 'print',
+                    className: 'btn btn-outline-primary btn-sm mt-2'
+                }
+            ],
+
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": `/NV_BaoCao/LoadDataChiTietNhom?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}`,
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "ID_BanIn" },
+                { "data": "TenNhanVien" },
+                { "data": "Bios_MayTinh" },
+                {
+                    "data": { "TenTaiLieu": "TenTaiLieu", "TenTaiLieuDinhKem": "TenTaiLieuDinhKem" }, "render": function (data, type, row) {
+                        return data.TenTaiLieuDinhKem
+                    }
+                },
+
+                {
+                    "data": "ThoiGianPrint", "render": function (data, type, row) {
+
+                        if (data != null) {
+                            return moment(data).format("DD/MM/YYYY HH:mm:SS")
+                        }
+                        return 'dd/mm/yyyy hh:mm:ss'
+                    }
+                },
+                {
+                    "data": { "TrangThai": "TrangThai", "TrangThaiText": "TrangThaiText" }, "render": function (data, type, row) {
+                        if (data.TrangThai == 0 && data.TrangThaiText == "") {
+                            return `<span class="badge badge-pill badge-danger">Chưa In</span>`
+                        }
+                        else if (data.TrangThai == 0 && data.TrangThaiText != "") {
+                            return `<span class="badge badge-pill badge-warning">${data.TrangThaiText}</span>`
+                        }
+                        else {
+                            return `<span class="badge badge-pill badge-success">${data.TrangThaiText}</span>`
+                        }
+                    }
+                },
+                { "data": "TongSoTrangDaIn" },
+                {
+                    "data": "PaperSize", "render": function (data, type, row) {
+
+                        if (data != "") {
+                            return data
+                        }
+                        return ``
+                    }
+                },
+                {
+                    "data": "TenMayIn", "render": function (data, type, row) {
+
+                        if (data != "") {
+                            return data
+                        }
+                        return ``
+                    }
+                },
+            ],
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(6)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = 0
+                PaperSize = $("#filter").val()
+                $.get(`/NV_BaoCao/TotalChiTietNhom?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}&PaperSize=${PaperSize}`, (data) => { pageTotal = data }).then(() => {
+                    // Update footer
+                    $(api.column(6).footer()).html(pageTotal);
+                })
+
+               
+            },
+        });
+
+
+        
+
+        dtt.on('draw.dt', function () {
+            var info = dtt.page.info();
+            dtt.column(0, { search: 'applied', order: 'applied', page: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + info.start;
+            });
+        });
+
+
+    }
+
+   
+
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+    // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
+    //let ID_NhomNhanVien = params.ID_NhomNhanVien; // "some_value"
+    //let month = params.month; // "some_value"
+    console.log(month)
+    $("#PrintBaoCao").click(() => {
+        $.ajax({
+            url: `/NV_BaoCao/InBaoCao?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}`,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            type: "POST",
+            beforeSend: function () {
+            },
+            success: function (response) {
+               
+                window.open(`/NV_BaoCao/Download?Name=${response}`, "_self");
+            },
+            error: function (response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất Bại',
+                    text: 'Lỗi hệ thống',
+                    timer: 2000,
+                    showConfirmButton: false,
+                }).then(() => {
+                  
+                })
+
+
+            }
+        });
+    })
+
+
+    $(document).ready(function () {
+        loadDataTable();
+        $.get(`/NV_BaoCao/Filter`, data => {
+            $.each(data, (index, item) => {
+                $("#filter").append(`<option value="${item.PaperSize}">${item.PaperSize}</option>`)
+            })
+        }).then(() => {
+            PaperSize = $("#filter").val()
+        })
+        
+    })
+
+
+</script>
+

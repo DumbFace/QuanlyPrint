@@ -1,0 +1,209 @@
+﻿
+@{
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+
+        .seen {
+            background-color: #0000001f;
+        }
+    </style>
+
+}
+
+<nav class="main-header navbar navbar-expand navbar-white navbar-dark bg-primary border-bottom-0 elevation-1 text-sm">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button" id="push"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                @*<i class="far fa-bell"></i>
+                @{
+                    if (ViewBag.thongbao != 0)
+                    {
+                        <span class="badge badge-warning navbar-badge" style="font-size: 10px;" id="numberthongbao">@ViewBag.thongbao</span>
+                    }
+                }*@
+
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+
+                <span class="dropdown-item dropdown-footer bg-primary" style="font-size: 15px;">Thông Báo</span>
+                <div style="max-height: 320px; overflow: scroll" id="thongbao">
+
+                </div>
+
+                <span class="dropdown-item dropdown-footer" style="font-size: 15px; cursor: pointer;" id="checkallseen">Đánh dấu tất cả đã đọc</span>
+                <div class="dropdown-divider"></div>
+
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+        </li>
+
+        <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <img src="~/Content/dist/images/Avatar.png" class="user-image img-circle elevation-2" alt="User Image">
+                <span class="d-none d-md-inline">@ViewBag.TenNhanVien</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+
+                <li class="user-header bg-primary">
+                    <img src="~/Content/dist/images/Avatar.png" class="img-circle elevation-2" alt="User Image">
+                    <p>
+                        @ViewBag.TenNhanVien
+                    </p>
+                </li>
+                <li class="user-body">
+                    <div class="row">
+                       
+                        <div class="col-6 text-center">
+                            <a data-toggle="modal" data-target="#password" id="changePassword" style="cursor: pointer;">Mật Khẩu</a>
+                        </div>
+                        <div class="col-6 text-center">
+                            <a href="#" data-toggle="modal" data-target="#email">Email Mới</a>
+                        </div>
+
+
+                    </div>
+                </li>
+                <li class="user-footer">
+
+                    <a href="@Url.Action("LogOut","Account")" class="btn btn-success btn-flat float-right">Đăng Xuất</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="modal fade" id="imgavatar">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+                    <h4 class="modal-title text-primary">Đổi Ảnh</h4>
+                </div>
+                <button type="button" class="close closeform_1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/DM_NhanVien/DoiAnh?Length=8" class="formDoiAnh" data-ajax="true" data-ajax-failure="FnFailure_DoiAnh" data-ajax-method="POST" data-ajax-success="FnSuccess_DoiAnh" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <img class="profile-user-img img-fluid img-circle" src="~/Content/dist/images/Avatar.png" alt="Userprofile" id="user-image1">
+                    </div>
+                    <hr>
+                    <div class="text-center custom-file">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <i class="fas fa-upload"></i>
+                                    <input type="file" class="custom-file-input" id="Avatar1" name="Avatar1" onchange="loadFile1(event)">
+                                    <label class="custom-file-label" for="exampleInputFile">Chọn Ảnh</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                    <button class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="password">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+                    <h4 class="modal-title text-primary">Đổi Mật Khẩu</h4>
+                </div>
+                <button type="button" class="close closeform_1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/DM_NhanVien/DoiMatKhau" class="formDoiMatKhau form-horizontal" data-ajax="true" data-ajax-failure="FnFailure_Password" data-ajax-method="POST" data-ajax-success="FnSuccess_Password" method="post" novalidate="novalidate">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Password1">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="MatKhau1" name="MatKhau1" placeholder="nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="form-group">
+                        <label for="Password2">Mật khẩu mới</label>
+                        <input type="password" class="form-control validate-equalTo-blur" id="MatKhauMoi" name="MatKhauMoi" placeholder="nhập mật khẩu mới"><label id="MatKhauMoi-error" class="is-invalid" for="MatKhauMoi" style="display: none;"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="Password3">Nhập lại mật khẩu mới</label>
+                        <input type="password" class="form-control" id="ReMatKhauMoi" name="ReMatKhauMoi" placeholder="nhập lại mật khẩu"><label id="ReMatKhauMoi-error" class="is-invalid" for="ReMatKhauMoi" style="display: none;"></label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                    <button class="btn btn-primary" type="submit">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="email">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+                    <h4 class="modal-title text-primary">Đổi Email Mới</h4>
+                </div>
+                <button type="button" class="close closeform_1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/DM_NhanVien/DoiEmail" class="formDoiEmail form-horizontal" data-ajax="true" data-ajax-begin="FnBegin" data-ajax-failure="FnFailure_DoiEmail" data-ajax-method="POST" data-ajax-success="FnSuccess_DoiEmail" id="form2" method="post" novalidate="novalidate">
+                @Html.AntiForgeryToken();
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="email">Email hiện tại</label>
+                        <input type="email" class="form-control" id="emailCu" name="email1" disabled="">
+                        <input type="email" class="form-control" id="idCanBo" name="idCanBo" hidden value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="email2">Đổi sang Email mới</label>
+                        <input type="email" class="form-control" id="emailMoi" name="email2" placeholder="nhập email mới">
+                    </div>
+                    <div class="form-group">
+                        <label for="Password2">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="MatKhau1" name="MatKhau1" placeholder="nhập mật khẩu của bạn.">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/UserInfo.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
