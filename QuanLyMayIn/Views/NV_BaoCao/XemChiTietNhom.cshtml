@@ -235,7 +235,8 @@
 
                 {
                     "data": "ThoiGianPrint", "render": function (data, type, row) {
-
+                        console.log(row);
+                        console.log(moment(data).format("DD/MM/YYYY HH:mm:SS"));
                         if (data != null) {
                             return moment(data).format("DD/MM/YYYY HH:mm:SS")
                         }

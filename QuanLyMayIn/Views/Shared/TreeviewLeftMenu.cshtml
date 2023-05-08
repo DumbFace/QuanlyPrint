@@ -45,13 +45,13 @@
                         {
                             <ul class="nav nav-treeview">
                                 @*<li class="nav-item">
-                                    <a href="/bao-cao" class="nav-link">
-                                        <i class="nav-icon far fa-circle nav-icon"></i>
-                                        <p>
-                                            Báo Cáo Chi Tiết
-                                        </p>
-                                    </a>
-                                </li>*@
+                                        <a href="/bao-cao" class="nav-link">
+                                            <i class="nav-icon far fa-circle nav-icon"></i>
+                                            <p>
+                                                Báo Cáo Chi Tiết
+                                            </p>
+                                        </a>
+                                    </li>*@
                                 <li class="nav-item ">
                                     <a href="#" class="nav-link active">
                                         <i class="nav-icon fas fa-table"></i>
@@ -61,28 +61,37 @@
                                         </p>
                                     </a>
 
-                                   
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
-                                            <a href="/bao-cao" class="nav-link">
+                                            <a href="/bao-cao/TongHop" class="nav-link">
                                                 <i class="nav-icon far fa-circle nav-icon"></i>
                                                 <p>
-                                                    Báo Cáo Theo Cá Nhân
+                                                    Báo Cáo Tổng Quát
                                                 </p>
                                             </a>
                                         </li>
                                     </ul>
-                                   
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="/bao-cao/may-in" class="nav-link">
-                                                <i class="nav-icon far fa-circle nav-icon"></i>
-                                                <p>
-                                                    Báo Cáo Theo Máy In
-                                                </p>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    @*<ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="/bao-cao" class="nav-link">
+                                                    <i class="nav-icon far fa-circle nav-icon"></i>
+                                                    <p>
+                                                        Báo Cáo Theo Cá Nhân
+                                                    </p>
+                                                </a>
+                                            </li>
+                                        </ul>*@
+
+                                    @*<ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="/bao-cao/may-in" class="nav-link">
+                                                    <i class="nav-icon far fa-circle nav-icon"></i>
+                                                    <p>
+                                                        Báo Cáo Theo Máy In
+                                                    </p>
+                                                </a>
+                                            </li>
+                                        </ul>*@
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
                                             <a href="/bao-cao/nhom" class="nav-link">
@@ -93,6 +102,7 @@
                                             </a>
                                         </li>
                                     </ul>
+
                                 </li>
                             </ul>
                         }
@@ -115,7 +125,7 @@
                                 <li class="nav-item">
                                     <a href="/nhom-nhan-vien" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p >DM Nhóm Nhân Viên</p>
+                                        <p>DM Nhóm Khoa Phòng</p>
                                     </a>
                                 </li>
 
@@ -125,75 +135,56 @@
                                 <li class="nav-item">
                                     <a href="/nhan-vien" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Danh Mục Nhân Viên</p>
+                                        <p>Danh Mục Máy Tính</p>
                                     </a>
                                 </li>
                             }
-                            @if (LISTQUYEN.Contains("DM_MayIn_XEM"))
-                            {
-                                <li class="nav-item">
-                                    <a href="/may-in" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Danh Mục Máy In</p>
-                                    </a>
-                                </li>
-                            }
-                            @if (LISTQUYEN.Contains("DM_ChiTietNhanVienMayIn_XEM"))
-                            {
-                                <li class="nav-item">
-                                    <a href="/nhan-vien-may-in" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Liên Kết Máy In</p>
-                                    </a>
-                                </li>
-                            }
-                            @if (LISTQUYEN.Contains("DM_SoLuongBanIn_XEM"))
-                            {
-                                <li class="nav-item">
-                                    <a href="/so-luong-ban-in" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Cài Đặt Số Lượng In</p>
-                                    </a>
-                                </li>
-                            }
+
+                            @*@if (LISTQUYEN.Contains("DM_SoLuongBanIn_XEM"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/so-luong-ban-in" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Cài Đặt Số Lượng In</p>
+                                        </a>
+                                    </li>
+                                }*@
                         </ul>
                     </li>
                 }
-                @if (LISTQUYEN.Contains("DM_NhomTaiKhoan_XEM") || LISTQUYEN.Contains("HT_ChiTietPhanQuyen_XEM"))
-                {
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-table"></i>
-                            <p>
-                                HỆ THỐNG
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            @if (LISTQUYEN.Contains("DM_NhomTaiKhoan_XEM"))
-                            {
-                                <li class="nav-item">
-                                    <a href="/nhom-tai-khoan" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Nhóm Tài Khoản</p>
-                                    </a>
-                                </li>
-                            }
-                            @if (LISTQUYEN.Contains("HT_ChiTietPhanQuyen_XEM"))
-                            {
-                                <li class="nav-item">
-                                    <a href="/phan-quyen" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Phân Quyền</p>
-                                    </a>
-                                </li>
-                            }
-                            </ul>
-                    </li>
-                }
-                </ul>
-               
-
+                @*@if (LISTQUYEN.Contains("DM_NhomTaiKhoan_XEM") || LISTQUYEN.Contains("HT_ChiTietPhanQuyen_XEM"))
+                    {
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-table"></i>
+                                <p>
+                                    HỆ THỐNG
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @if (LISTQUYEN.Contains("DM_NhomTaiKhoan_XEM"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/nhom-tai-khoan" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Nhóm Tài Khoản</p>
+                                        </a>
+                                    </li>
+                                }
+                                @if (LISTQUYEN.Contains("HT_ChiTietPhanQuyen_XEM"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/phan-quyen" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Phân Quyền</p>
+                                        </a>
+                                    </li>
+                                }
+                                </ul>
+                        </li>
+                    }*@
+            </ul>
         </nav>
         <!-- /.sidebar-menu -->
     </div>

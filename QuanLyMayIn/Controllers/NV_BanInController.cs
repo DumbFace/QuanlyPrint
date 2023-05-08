@@ -20,7 +20,6 @@ using Image = iTextSharp.text.Image;
     
 using System.Text;
 
-
 namespace QuanLyMayIn.Controllers
 {
     [Authorize(Roles = "ADMIN, NHAN_VIEN")]

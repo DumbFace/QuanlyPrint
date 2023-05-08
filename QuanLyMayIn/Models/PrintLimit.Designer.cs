@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Repo\PrintManager\Quanlymayin22\QuanLyMayIn_2\QuanLyMayIn\Models\PrintLimit.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\Repo\Github\QuanlyPrint\QuanLyMayIn_2\QuanLyMayIn\Models\PrintLimit.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
