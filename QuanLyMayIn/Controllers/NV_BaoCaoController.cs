@@ -330,6 +330,8 @@ namespace QuanLyMayIn.Controllers
             int recordsTotal = 0;
             var search = Request.Form.GetValues("columns[0][search][value]").FirstOrDefault();
             var filter = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
+            var monthFilter = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
+
             var UserID = user.GetUser();
 
 

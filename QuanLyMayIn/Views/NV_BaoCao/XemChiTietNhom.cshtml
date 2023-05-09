@@ -43,6 +43,14 @@
         #MatKhau {
             margin-right: 10px;
         }
+
+        select#filter {
+            height: calc(1.8125rem + 2px);
+        }
+
+        input#FilterMonth {
+            margin-right: 1rem;
+        }
     </style>
 }
 
@@ -66,9 +74,10 @@
                 <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
                     <div class="card-tools">
                         <div class="input-group input-group-sm row">
+                            <input type="month" name="table_search" class="form-control float-right" id="filterMonth">
                             <div class="input-group-append mr-3">
                                 <select class="form-control" id="filter">
-                                   <option value="all">Chọn</option>
+                                    <option value="all">Chọn</option>
                                 </select>
                             </div>
                             <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Search">
@@ -90,7 +99,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div class="card-body text-nowrap table-bordered p-0">
@@ -134,7 +143,7 @@
     const ID_NhomNhanVien = urlParams.get('ID_NhomNhanVien');
     const month = urlParams.get('month');
     var dtt;
-    var PaperSize = ""
+    var PaperSize = "";
 
     $("#Search").keyup(function (e) {
         dtt.columns(0).search($("#Search").val());
@@ -147,6 +156,13 @@
         dtt.draw();
     });
 
+
+    $("#filterMonth").change(function (e) {
+        PaperSize = $("#filterMonth").val()
+        dtt.columns(2).search($("#filterMonth").val());
+        console.log($("#filterMonth").val());
+        dtt.draw();
+    });
 
     //create function
     function FnBegin() {
@@ -235,8 +251,6 @@
 
                 {
                     "data": "ThoiGianPrint", "render": function (data, type, row) {
-                        console.log(row);
-                        console.log(moment(data).format("DD/MM/YYYY HH:mm:SS"));
                         if (data != null) {
                             return moment(data).format("DD/MM/YYYY HH:mm:SS")
                         }
@@ -300,12 +314,12 @@
                     $(api.column(6).footer()).html(pageTotal);
                 })
 
-               
+
             },
         });
 
 
-        
+
 
         dtt.on('draw.dt', function () {
             var info = dtt.page.info();
@@ -317,7 +331,7 @@
 
     }
 
-   
+
 
     const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
@@ -325,7 +339,6 @@
     // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
     //let ID_NhomNhanVien = params.ID_NhomNhanVien; // "some_value"
     //let month = params.month; // "some_value"
-    console.log(month)
     $("#PrintBaoCao").click(() => {
         $.ajax({
             url: `/NV_BaoCao/InBaoCao?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}`,
@@ -335,7 +348,7 @@
             beforeSend: function () {
             },
             success: function (response) {
-               
+
                 window.open(`/NV_BaoCao/Download?Name=${response}`, "_self");
             },
             error: function (response) {
@@ -346,7 +359,7 @@
                     timer: 2000,
                     showConfirmButton: false,
                 }).then(() => {
-                  
+
                 })
 
 
@@ -364,7 +377,7 @@
         }).then(() => {
             PaperSize = $("#filter").val()
         })
-        
+
     })
 
 
