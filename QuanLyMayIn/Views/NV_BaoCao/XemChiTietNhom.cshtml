@@ -48,8 +48,72 @@
             height: calc(1.8125rem + 2px);
         }
 
-        input#FilterMonth {
+        input#filterDate {
             margin-right: 1rem;
+        }
+
+        input#Search {
+            margin-right: 1rem;
+        }
+
+        select#filter {
+            margin-right: 1rem;
+        }
+
+
+        @@media (max-width: 576px) {
+            input#filterDate {
+                width: 120px;
+                margin-bottom: 10px;
+            }
+
+/*            input#Search {
+                width: 120px;
+                margin-bottom: 15px;
+            }*/
+
+            .input-group.input-group-sm.row {
+                margin: 0;
+            }
+
+            .input-group-append {
+                width: 90%;
+            }
+
+            input#Search {
+                width: 90%;
+                margin: 10px 0;
+            }
+
+            input#filterDate {
+                width: 90%;
+                margin: 10px 0;
+            }
+
+            table#dataTable {
+                overflow-x: auto;
+                display: block;
+            }
+
+            .card-tools {
+                 position: unset; 
+            
+            }
+
+            button#PrintBaoCao {
+                margin-bottom: 15px;
+            }
+
+            .card-tools .input-group {
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            select#filter {
+                width: 100%;
+                margin: 0;
+            }
         }
     </style>
 }
@@ -71,26 +135,24 @@
     <div class="container-fluid">
         <div class="row dt1">
             <div class="col-12">
-                <div class="card elevation-2" style="overflow-x: scroll; overflow-y: hidden; ">
+                <div class="card elevation-2">
                     <div class="card-tools">
                         <div class="input-group input-group-sm row">
-                            <input type="month" name="table_search" class="form-control float-right" id="filterMonth">
-                            <div class="input-group-append mr-3">
+                            <input type="month" name="table_search" class="form-control float-right" id="filterDate">
+                            <div class="input-group-append">
                                 <select class="form-control" id="filter">
                                     <option value="all">Chọn</option>
                                 </select>
                             </div>
                             <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm ..." id="Search">
 
+                            @*<div class="input-group-append">
+                                    <button type="submit" class="btn btn-default" id="search_btn">
+                                        <i class="fas fa-search text-primary"></i>
+                                    </button>
+                                </div>*@
 
-
-                            <div class="input-group-append mr-3">
-                                <button type="submit" class="btn btn-default" id="search_btn">
-                                    <i class="fas fa-search text-primary"></i>
-                                </button>
-                            </div>
-
-                            <div class="input-group-append mr-3">
+                            <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary" id="PrintBaoCao">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
                                         <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
@@ -144,8 +206,11 @@
     const month = urlParams.get('month');
     var dtt;
     var PaperSize = "";
+    var date = "";
+    var search = "";
 
     $("#Search").keyup(function (e) {
+        search = $("#Search").val();
         dtt.columns(0).search($("#Search").val());
         dtt.draw();
     });
@@ -157,10 +222,9 @@
     });
 
 
-    $("#filterMonth").change(function (e) {
-        PaperSize = $("#filterMonth").val()
-        dtt.columns(2).search($("#filterMonth").val());
-        console.log($("#filterMonth").val());
+    $("#filterDate").change(function (e) {
+        date = $("#filterDate").val()
+        dtt.columns(2).search($("#filterDate").val());
         dtt.draw();
     });
 
@@ -244,7 +308,7 @@
                 { "data": "TenNhanVien" },
                 { "data": "Bios_MayTinh" },
                 {
-                    "data": { "TenTaiLieu": "TenTaiLieu", "TenTaiLieuDinhKem": "TenTaiLieuDinhKem" }, "render": function (data, type, row) {
+                    "data": { "TenTaiLieu": "TenTaiLieu", "TenTaiLieuDinhKem": "TenTaiLieuDinhKem" }, "render": function (data, type, row, recordsTotal) {
                         return data.TenTaiLieuDinhKem
                     }
                 },
@@ -291,29 +355,18 @@
                 },
             ],
             footerCallback: function (row, data, start, end, display) {
+
                 var api = this.api();
 
-                // Remove the formatting to get integer data for summation
-                var intVal = function (i) {
-                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                };
-
-                // Total over all pages
-                total = api
-                    .column(6)
-                    .data()
-                    .reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Total over this page
                 pageTotal = 0
                 PaperSize = $("#filter").val()
-                $.get(`/NV_BaoCao/TotalChiTietNhom?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}&PaperSize=${PaperSize}`, (data) => { pageTotal = data }).then(() => {
+                $.get(`/NV_BaoCao/TotalChiTietNhom?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}&PaperSize=${PaperSize}&date=${date}&search=${search}`, (data) => { pageTotal = data }).then(() => {
                     // Update footer
                     $(api.column(6).footer()).html(pageTotal);
-                })
-
+                }).fail(function (e) {
+                    console.log(e)
+                    //alert("error");
+                });
 
             },
         });
@@ -341,15 +394,26 @@
     //let month = params.month; // "some_value"
     $("#PrintBaoCao").click(() => {
         $.ajax({
-            url: `/NV_BaoCao/InBaoCao?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}`,
+            url: `/NV_BaoCao/InBaoCao?ID_NhomNhanVien=${ID_NhomNhanVien}&month=${month}&date=${date}&paperSize=${PaperSize}&search=${search}`,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             type: "POST",
             beforeSend: function () {
             },
             success: function (response) {
+                if (response.status == 'error') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất Bại',
+                        text: 'Không có dữ liệu để in',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => {
 
-                window.open(`/NV_BaoCao/Download?Name=${response}`, "_self");
+                    })
+                } else {
+                    window.open(`/NV_BaoCao/Download?Name=${response}`, "_self");
+                }
             },
             error: function (response) {
                 Swal.fire({

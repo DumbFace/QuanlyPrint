@@ -201,6 +201,7 @@ namespace QuanLyMayIn.Controllers
                                 join nv in db.DM_NhanVien on bi.ID_NhanVien equals nv.ID_NhanVien
                                 join nnv in db.DM_NhomNhanVien on nv.KeyNhomNhanVien equals nnv.KeyNhomNhanVien
                                 where nv.ID_NhanVien == ID_NhanVien 
+                                orderby bi.ThoiGianPrint descending
                                 select new { bi.ID_NhanVien, nv.TenNhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize }).ToList();
 
 

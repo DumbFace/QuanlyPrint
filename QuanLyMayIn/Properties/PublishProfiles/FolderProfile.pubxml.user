@@ -4,9 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Users\Beron\Documents\congviec\public code\PMQuanLyMayIn_2</_PublishTargetUrl>
-    <History>True|2022-12-19T04:11:34.0836333Z;True|2022-12-19T10:59:09.8954777+07:00;True|2022-12-16T09:26:34.2596026+07:00;True|2022-11-10T15:48:44.0742447+07:00;True|2022-11-10T09:35:45.9848045+07:00;</History>
-    <LastFailureDetails />
+    <_PublishTargetUrl>D:\Repo\Github\QuanlyPrint\QuanLyMayIn_2\Publish</_PublishTargetUrl>
+    <History>True|2023-05-10T07:44:08.2419565Z;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Antlr3.Runtime.dll">
@@ -24,12 +23,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="bin/BouncyCastle.Crypto.dll">
       <publishTime>12/08/2020 18:05:32</publishTime>
     </File>
-    <File Include="bin/ClosedXML.dll">
-      <publishTime>06/29/2022 06:47:22</publishTime>
-    </File>
-    <File Include="bin/ClosedXML.pdb">
-      <publishTime>06/29/2022 06:47:22</publishTime>
-    </File>
     <File Include="bin/de/PdfSharp.Charting.resources.dll">
       <publishTime>02/04/2019 13:21:54</publishTime>
     </File>
@@ -40,10 +33,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/15/2022 01:39:18</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
-      <publishTime>04/16/2020 20:38:42</publishTime>
+      <publishTime>04/17/2020 03:38:42</publishTime>
     </File>
     <File Include="bin/EntityFramework.SqlServer.dll">
-      <publishTime>04/16/2020 20:38:56</publishTime>
+      <publishTime>04/17/2020 03:38:56</publishTime>
     </File>
     <File Include="bin/EPPlus.dll">
       <publishTime>08/30/2022 19:55:02</publishTime>
@@ -145,10 +138,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>02/04/2019 13:21:52</publishTime>
     </File>
     <File Include="bin/QuanLyMayIn.dll">
-      <publishTime>12/19/2022 11:42:57</publishTime>
+      <publishTime>05/10/2023 14:44:01</publishTime>
     </File>
     <File Include="bin/QuanLyMayIn.pdb">
-      <publishTime>12/19/2022 11:42:57</publishTime>
+      <publishTime>05/10/2023 14:44:01</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>08/08/2018 05:38:48</publishTime>
@@ -805,7 +798,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/02/2022 10:10:31</publishTime>
     </File>
     <File Include="Content/dist/images/logo.png">
-      <publishTime>08/02/2022 10:10:31</publishTime>
+      <publishTime>11/09/2021 10:27:36</publishTime>
     </File>
     <File Include="Content/dist/images/vinaai-favicon.png">
       <publishTime>08/02/2022 10:10:31</publishTime>
@@ -7459,19 +7452,19 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/23/2022 15:51:44</publishTime>
     </File>
     <File Include="Views/DM_NhanVien/Index.cshtml">
-      <publishTime>12/14/2022 15:21:34</publishTime>
+      <publishTime>05/10/2023 14:09:26</publishTime>
     </File>
     <File Include="Views/DM_NhanVien/SoLuongBanIn.cshtml">
       <publishTime>12/15/2022 13:51:42</publishTime>
     </File>
     <File Include="Views/DM_NhomNhanVien/Index.cshtml">
-      <publishTime>12/18/2022 12:26:36</publishTime>
+      <publishTime>05/10/2023 14:08:47</publishTime>
     </File>
     <File Include="Views/DM_NhomTaiKhoan/Index.cshtml">
       <publishTime>08/23/2022 15:51:44</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>12/19/2022 11:39:11</publishTime>
+      <publishTime>05/10/2023 14:32:19</publishTime>
     </File>
     <File Include="Views/HT_ChiTietPhanQuyen/Index.cshtml">
       <publishTime>08/23/2022 15:51:44</publishTime>
@@ -7483,13 +7476,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/15/2022 14:40:35</publishTime>
     </File>
     <File Include="Views/NV_BaoCao/Index.cshtml">
-      <publishTime>09/22/2022 15:19:58</publishTime>
+      <publishTime>05/10/2023 10:25:13</publishTime>
     </File>
     <File Include="Views/NV_BaoCao/MayIn.cshtml">
       <publishTime>11/10/2022 08:57:45</publishTime>
     </File>
     <File Include="Views/NV_BaoCao/Nhom.cshtml">
-      <publishTime>11/10/2022 09:29:58</publishTime>
+      <publishTime>05/10/2023 14:01:09</publishTime>
     </File>
     <File Include="Views/NV_BaoCao/TongHop.cshtml">
       <publishTime>11/10/2022 10:11:12</publishTime>
@@ -7501,13 +7494,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/10/2022 09:31:42</publishTime>
     </File>
     <File Include="Views/NV_BaoCao/XemChiTietNhom.cshtml">
-      <publishTime>12/19/2022 11:42:02</publishTime>
+      <publishTime>05/10/2023 14:06:05</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>08/02/2022 10:10:37</publishTime>
     </File>
     <File Include="Views/Shared/TreeviewLeftMenu.cshtml">
-      <publishTime>12/16/2022 09:24:34</publishTime>
+      <publishTime>05/08/2023 08:45:37</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
       <publishTime>08/23/2022 15:51:44</publishTime>
@@ -7522,7 +7515,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/02/2022 10:10:37</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/16/2022 09:26:28</publishTime>
+      <publishTime>05/10/2023 14:44:03</publishTime>
     </File>
   </ItemGroup>
 </Project>

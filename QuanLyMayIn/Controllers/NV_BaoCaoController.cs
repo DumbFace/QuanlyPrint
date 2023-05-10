@@ -330,7 +330,7 @@ namespace QuanLyMayIn.Controllers
             int recordsTotal = 0;
             var search = Request.Form.GetValues("columns[0][search][value]").FirstOrDefault();
             var filter = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
-            var monthFilter = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
+            var dtFilter = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
 
             var UserID = user.GetUser();
 
@@ -346,6 +346,15 @@ namespace QuanLyMayIn.Controllers
             {
                 data = data.Where(_ => _.ThoiGianPrint.Value.Month == month.Value.Month && _.ThoiGianPrint.Value.Year == month.Value.Year).ToList();
             }
+
+            if (!string.IsNullOrEmpty(dtFilter))
+            {
+                var split = dtFilter.Split('-');
+                int yearFilter = int.Parse(split[0]);
+                int monthFilter = int.Parse(split[1]);
+                data = data.Where(_ => _.ThoiGianPrint.Value.Month == monthFilter && _.ThoiGianPrint.Value.Year == yearFilter).ToList();
+            }
+
             var KeyNhomTaiTaiKhoan = user.GetGroupKey();
 
             if (KeyNhomTaiTaiKhoan != "ADMIN")
@@ -378,7 +387,7 @@ namespace QuanLyMayIn.Controllers
         }
 
 
-        public ActionResult TotalChiTietNhom(int ID_NhomNhanVien, DateTime? month, string PaperSize)
+        public ActionResult TotalChiTietNhom(int ID_NhomNhanVien, DateTime? month, string PaperSize,string date,string search)
         {
 
 
@@ -387,34 +396,45 @@ namespace QuanLyMayIn.Controllers
                         join nv in db.DM_NhanVien on bi.ID_NhanVien equals nv.ID_NhanVien
                         join nnv in db.DM_NhomNhanVien on nv.KeyNhomNhanVien equals nnv.KeyNhomNhanVien
                         where nnv.ID_NhomNhanVien == ID_NhomNhanVien
-                        select new { bi.ID_NhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.TenNhanVien, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize }).ToList();
+                        select new { bi.ID_NhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.TenNhanVien, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize });
 
             if (PaperSize != "all")
             {
                 if (PaperSize == "null" || PaperSize == null)
                 {
-                    data = data.Where(_ => _.PaperSize == "" || _.PaperSize == null).ToList();
+                    data = data.Where(_ => _.PaperSize == "" || _.PaperSize == null);
                 }
                 else
                 {
-                    data = data.Where(_ => _.PaperSize == PaperSize).ToList();
+                    data = data.Where(_ => _.PaperSize == PaperSize);
                 }
-
             }
+
+            if (!string.IsNullOrEmpty(date))
+            {
+                var split = date.Split('-');
+                int yearFilter = int.Parse(split[0]);
+                int monthFilter = int.Parse(split[1]);
+                data = data.Where(_ => _.ThoiGianPrint.Value.Month == monthFilter && _.ThoiGianPrint.Value.Year == yearFilter);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                data = data.Where(_ => _.TenTaiLieuDinhKem.Contains(search));
+            }
+
             if (month != null)
             {
-                data = data.Where(_ => _.ThoiGianPrint.Value.Month == month.Value.Month && _.ThoiGianPrint.Value.Year == month.Value.Year).ToList();
+                data = data.Where(_ => _.ThoiGianPrint.Value.Month == month.Value.Month && _.ThoiGianPrint.Value.Year == month.Value.Year);
             }
             var KeyNhomTaiTaiKhoan = user.GetGroupKey();
 
             if (KeyNhomTaiTaiKhoan != "ADMIN")
             {
-                data = data.Where(_ => _.ID_NhanVien == UserID).ToList();
+                data = data.Where(_ => _.ID_NhanVien == UserID);
             }
-
-          
-           
-            return Json(data.Sum(_=> _.TongSoTrangDaIn), JsonRequestBehavior.AllowGet);
+            int? sum = data.Sum(_ => _.TongSoTrangDaIn);
+            return Json(sum == null ? 0 : sum.Value, JsonRequestBehavior.AllowGet);
         }
         public JsonResult LoadCountSumYear()
         {
@@ -445,18 +465,48 @@ namespace QuanLyMayIn.Controllers
                 return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult InBaoCao(int ID_NhomNhanVien, DateTime? month)
+        public JsonResult InBaoCao(int ID_NhomNhanVien, DateTime? month,string search, string date, string paperSize)
         {
             
-            var data = (from bi in db.NV_BanIn
+            var query = (from bi in db.NV_BanIn
                         join nv in db.DM_NhanVien on bi.ID_NhanVien equals nv.ID_NhanVien
                         join nnv in db.DM_NhomNhanVien on nv.KeyNhomNhanVien equals nnv.KeyNhomNhanVien
                         where nnv.ID_NhomNhanVien == ID_NhomNhanVien 
-                        select new { bi.ID_NhanVien, nv.TenNhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize }).ToList();
+                        select new { bi.ID_NhanVien, nv.TenNhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize });
             if (month != null)
             {
-                data = data.Where(_ => _.ThoiGianPrint.Value.Month == month.Value.Month && _.ThoiGianPrint.Value.Year == month.Value.Year).ToList();
+                query = query.Where(_ => _.ThoiGianPrint.Value.Month == month.Value.Month && _.ThoiGianPrint.Value.Year == month.Value.Year);
             }
+
+            if (!string.IsNullOrEmpty(date))
+            {
+                var split = date.Split('-');
+                int yearFilter = int.Parse(split[0]);
+                int monthFilter = int.Parse(split[1]);
+                query = query.Where(_ => _.ThoiGianPrint.Value.Month == monthFilter && _.ThoiGianPrint.Value.Year == yearFilter);
+            }
+
+            if (!string.IsNullOrEmpty(paperSize))
+            {
+                if (paperSize != "all")
+                {
+                    if (paperSize == "null" || paperSize == null)
+                    {
+                        query = query.Where(_ => _.PaperSize == "" || _.PaperSize == null);
+                    }
+                    else
+                    {
+                        query = query.Where(_ => _.PaperSize == paperSize);
+                    }
+
+                }
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(_ => _.TenTaiLieuDinhKem.ToUpper().Contains(search.ToUpper()));
+            }
+            var data = query.OrderByDescending(_=>_.ThoiGianPrint).ToList();
             var sum = data.Sum(_ => _.TongSoTrangDaIn);
             var fileName = $@"BaoCaoIn.xlsx";
             var file = new FileInfo(fileName);
@@ -464,7 +514,7 @@ namespace QuanLyMayIn.Controllers
             var package = new ExcelPackage(file);
             if (data.Count == 0)
             {
-                return Json(new { status = "error", message = "Cán bộ chưa được điểm danh trong thời gian này" }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", message = "Không có dữ liệu để in" }, JsonRequestBehavior.AllowGet);
             }
             else
             {
@@ -488,10 +538,10 @@ namespace QuanLyMayIn.Controllers
                 worksheet1.Column(2).Width = GetTrueColumnWidth(12.11);
                 worksheet1.Column(3).Width = GetTrueColumnWidth(10.67);
                 worksheet1.Column(4).Width = GetTrueColumnWidth(10.11);
-                worksheet1.Column(5).Width = GetTrueColumnWidth(25.67);
+                worksheet1.Column(5).Width = GetTrueColumnWidth(35.00);
                 worksheet1.Column(6).Width = GetTrueColumnWidth(10.44);
                 worksheet1.Column(7).Width = GetTrueColumnWidth(45.44);
-                worksheet1.Column(8).Width = GetTrueColumnWidth(25.44);
+                worksheet1.Column(8).Width = GetTrueColumnWidth(35.44);
                 worksheet1.Column(9).Width = GetTrueColumnWidth(20.44);
 
                 worksheet1.Cells["A1:I1"].Value = $@"Báo Cáo In Ấn";
