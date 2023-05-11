@@ -340,7 +340,7 @@ namespace QuanLyMayIn.Controllers
                         join nnv in db.DM_NhomNhanVien on nv.KeyNhomNhanVien equals nnv.KeyNhomNhanVien
                         where nnv.ID_NhomNhanVien == ID_NhomNhanVien
                         orderby bi.ThoiGianPrint descending
-                        select new { bi.ID_NhanVien, bi.ID_BanIn, bi.JobID, bi.MaTaiLieu, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.TenNhanVien, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize }).ToList();
+                        select new { bi.ID_NhanVien, bi.ID_BanIn, bi.JobID, bi.TenTaiLieuDinhKem, bi.ThoiGianPrint, bi.TrangThaiText, bi.TrangThai, bi.TongSoTrangDaIn, bi.TongSoTrang, bi.ThoiGianUpload, nv.TenNhanVien, nv.KeyNhomNhanVien, nv.Bios_MayTinh, nnv.TenNhomNhanVien, bi.TenMayIn, bi.PaperSize }).ToList();
 
             if (month != null)
             {
